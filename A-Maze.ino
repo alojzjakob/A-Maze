@@ -1,8 +1,8 @@
-/* Tamaguino
+/* A-Maze
  by Alojz Jakob <http://jakobdesign.com>
 
  ********** TAMAGUINO ***********
- * Tamagotchi clone for Arduino *
+ * Maze game for Arduino *
  ********************************
  
 */
