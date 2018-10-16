@@ -308,6 +308,7 @@ const int button6Pin = 4; //B
 const int button7Pin = 2; //MENU
 
 const int sound = 3; 
+const int ledPin = 10; 
 
 int button1State = 0;
 int button2State = 0;
@@ -401,12 +402,14 @@ void setup() {
   // etc
   
   pinMode(sound, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   pinMode(13,OUTPUT);
 
   randomSeed(analogRead(A0));
   delay(random(2,2000));
   display.begin(SH1106_SWITCHCAPVCC, 0x3C);
+  //display.begin(SH1106_SWITCHCAPVCC, 0x78);
   display.clearDisplay();
 
   // splash
@@ -415,37 +418,51 @@ void setup() {
   //display.print(F(" generating maze...")); 
   display.drawBitmap(0, 0, title4 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title3 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title2 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title1 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(3000);
   display.clearDisplay();
   display.drawBitmap(0, 0, title2 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title3 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title4 , 128, 64, WHITE);
   display.display();
+  digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
+  digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   //display.drawBitmap(15, 24, splash1 , 48, 26, WHITE);
