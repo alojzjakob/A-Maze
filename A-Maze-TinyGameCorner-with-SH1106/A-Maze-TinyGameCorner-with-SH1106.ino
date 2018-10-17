@@ -289,6 +289,7 @@ const unsigned char title4 [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
+/*
 const unsigned char brick [] PROGMEM = {
   // 'brick, 4x4px
   0xf9, 0xdf
@@ -298,26 +299,26 @@ const unsigned char checker [] PROGMEM = {
   // 'checker, 4x4px
   0x5a, 0x5a
 };
+*/
 
+const int8_t button1Pin = 9; //LEFT
+const int8_t button2Pin = 8; //RIGHT
+const int8_t button3Pin = 7; //UP
+const int8_t button4Pin = 6; //DOWN
+const int8_t button5Pin = 5; //A
+const int8_t button6Pin = 4; //B
+const int8_t button7Pin = 2; //MENU
 
-const int button1Pin = 9; //LEFT
-const int button2Pin = 8; //RIGHT
-const int button3Pin = 7; //UP
-const int button4Pin = 6; //DOWN
-const int button5Pin = 5; //A
-const int button6Pin = 4; //B
-const int button7Pin = 2; //MENU
+const int8_t sound = 3; 
+const int8_t ledPin = 10; 
 
-const int sound = 3; 
-const int ledPin = 10; 
-
-int button1State = 0;
-int button2State = 0;
-int button3State = 0;
-int button4State = 0;
-int button5State = 0;
-int button6State = 0;
-int button7State = 0;
+int8_t button1State = 0;
+int8_t button2State = 0;
+int8_t button3State = 0;
+int8_t button4State = 0;
+int8_t button5State = 0;
+int8_t button6State = 0;
+int8_t button7State = 0;
 
 
 #define ACTIVATED LOW
@@ -367,17 +368,18 @@ uint8_t geni, genj, genk, genval, genmod;
 int8_t  genx, geny;
 
 
-int posx=0, posy=2; // Where you are in the Maze
+int8_t posx=0, posy=2; // Where you are in the Maze
 
-int illuminatedRow=0;
-int blinkPlayer=1;
-int wallPhase=1;
+int8_t illuminatedRow=0;
+int8_t blinkPlayer=1;
+int8_t wallPhase=1;
 
-int level=1;
+int8_t level=1;
 
-
-
-
+int8_t gameMode=0;
+int8_t selectedOption=1;
+int8_t menuPointerPos=0;
+bool menuPointerPosDir=false,gamePaused=false;
 
 void setup() {
   
@@ -483,7 +485,7 @@ void setup() {
   // end splash
 
 
-  generateMaze();
+  //generateMaze();
 
 
   //delay(2000);
@@ -501,6 +503,7 @@ void setup() {
 
 
 
+
 void loop() {
   
   button1State = digitalRead(button1Pin);
@@ -511,85 +514,172 @@ void loop() {
   button6State = digitalRead(button6Pin);
   button7State = digitalRead(button7Pin);
 
-
   display.clearDisplay();
 
- 
-  /* ------- BUTTON PRESS ACTIONS ------- */
-  bool wall;
-  
-  
-  /* ------- BUTTON 1 - LEFT ------- */
-  if(button1State==ACTIVATED){
-    //generateMaze();
-    if(posx-1>=0){
-      wall=readPixel(posx-1,posy);
-      if(!wall){
-        --posx;
-        tone(sound,1600,5);
-      }else{
-        tone(sound,100,50);  
-      }
-    }else{
-      tone(sound,100,50);
+  if(menuPointerPosDir){
+    menuPointerPos++;
+    if(menuPointerPos==6){
+      menuPointerPosDir=!menuPointerPosDir;
     }
-    delay(20);
-  }
-  /* ------- BUTTON 2 - RIGHT ------- */
-  if(button2State==ACTIVATED){
-    if(posx+1<=MAZEHEIGHT){
-      wall=readPixel(posx+1,posy);
-      if(!wall){
-        ++posx;
-        tone(sound,1600,5);
-      }else{
-        tone(sound,100,50);  
-      }
-    }else{
-      tone(sound,100,50);
+  }else{
+    menuPointerPos--;
+    if(menuPointerPos==-1){
+      menuPointerPosDir=!menuPointerPosDir;
     }
-    delay(20);
-  }
-  /* ------- BUTTON 3 - UP ------- */
-  if(button3State==ACTIVATED){
-    if(posy-1>=2){
-      wall=readPixel(posx,posy-1);
-      if(!wall){
-        --posy;
-        tone(sound,1600,5);
-      }else{
-        tone(sound,100,50);  
-      }
-    }else{
-      tone(sound,100,50);
-    }
-    delay(20);
-  }
-  /* ------- BUTTON 4 - DOWN ------- */
-  if(button4State==ACTIVATED){
-    if(posy+1<=MAZEWIDTH){
-      wall=readPixel(posx,posy+1);
-      if(!wall){
-        ++posy;
-        tone(sound,1600,5);
-      }else{
-        tone(sound,100,50);  
-      }
-    }else{
-      tone(sound,100,50);
-    }
-    delay(20);
   }
 
-  if(button5State==ACTIVATED){
-    display.fillCircle(20,30,5,WHITE);
+  if(gameMode==0){
+
+    //display.drawBitmap(0, -20, title1 , 128, 64, WHITE);
+    
+    display.setCursor(45,15);
+    display.print("walker");
+    if(selectedOption==1){
+      display.setCursor(30+menuPointerPos,15);
+      display.print(">");
+    }
+    display.setCursor(45,25);
+    display.print("collector");
+    if(selectedOption==2){
+      display.setCursor(30+menuPointerPos,25);
+      display.print(">");
+    }
+
+    /* ------- BUTTON 3 - UP ------- */
+    if(button3State==ACTIVATED){
+      selectedOption--;
+      if(selectedOption==0){
+        selectedOption=2;
+      }
+      tone(sound,1600,5);
+      delay(100);
+    }
+    /* ------- BUTTON 4 - DOWN ------- */
+    if(button4State==ACTIVATED){
+      selectedOption++;
+      if(selectedOption==3){
+        selectedOption=1;
+      }
+      tone(sound,1600,5);
+      delay(100);
+    }
+    if(button7State==ACTIVATED){
+      gameMode=selectedOption;
+      generateMaze();
+      delay(250);
+      button7State = digitalRead(button7Pin);
+    }
+    
   }
-  if(button6State==ACTIVATED){
-    display.fillCircle(50,30,5,WHITE);
+  if(gameMode==1){
+    walker();
+    if(!gamePaused){
+      selectedOption=1;
+    }
   }
-  if(button7State==ACTIVATED){
-    display.fillCircle(80,30,5,WHITE);
+  if(gameMode==2){
+    collector();
+    if(!gamePaused){
+      selectedOption=1;
+    }
   }
+
+  display.display();
+  delay(10*DELAYMULTIPLIER);
+  
+}
+
+
+void walker(){
+    /* ------- BUTTON PRESS ACTIONS ------- */
+  bool wall;
+  
+  if(!gamePaused){
+    
+    //GAME CONTROL
+    
+    /* ------- BUTTON 1 - LEFT ------- */
+    if(button1State==ACTIVATED){
+      //generateMaze();
+      if(posx-1>=0){
+        wall=readPixel(posx-1,posy);
+        if(!wall){
+          --posx;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(30);
+    }
+    /* ------- BUTTON 2 - RIGHT ------- */
+    if(button2State==ACTIVATED){
+      if(posx+1<=MAZEHEIGHT){
+        wall=readPixel(posx+1,posy);
+        if(!wall){
+          ++posx;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(30);
+    }
+    /* ------- BUTTON 3 - UP ------- */
+    if(button3State==ACTIVATED){
+      if(posy-1>=2){
+        wall=readPixel(posx,posy-1);
+        if(!wall){
+          --posy;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(30);
+    }
+    /* ------- BUTTON 4 - DOWN ------- */
+    if(button4State==ACTIVATED){
+      if(posy+1<=MAZEWIDTH){
+        wall=readPixel(posx,posy+1);
+        if(!wall){
+          ++posy;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(30);
+    }
+  
+    if(button5State==ACTIVATED){//A
+      //display.fillCircle(20,30,5,WHITE);
+      tone(sound,1600,5);
+      delay(60);
+    }
+    if(button6State==ACTIVATED){//B
+      //display.fillCircle(50,30,5,WHITE);
+      tone(sound,1600,5);
+      delay(60);
+    }
+    if(button7State==ACTIVATED){//MENU
+      //display.fillCircle(80,30,5,WHITE);
+      gamePaused=true;
+      tone(sound,1600,5);
+      delay(200);
+      button7State = digitalRead(button7Pin);
+    }
+  
+  }
+
 
   
   display.setCursor(0,0);
@@ -604,13 +694,152 @@ void loop() {
     wallPhase=1;
   }else{
     drawMaze();
+    if(gamePaused){
+  
+      display.fillRect(24,8,80,45,WHITE);
+      display.fillRect(25,9,78,43,BLACK);
+      display.setTextColor(WHITE);
+      display.setCursor(45,15);
+      display.print("resume");
+      if(selectedOption==1){
+        display.setCursor(30+menuPointerPos,15);
+        display.print(">");
+      }
+      display.setCursor(45,25);
+      display.print("quit");
+      if(selectedOption==2){
+        display.setCursor(30+menuPointerPos,25);
+        display.print(">");
+      }
+  
+      /* ------- BUTTON 3 - UP ------- */
+      if(button3State==ACTIVATED){
+        selectedOption--;
+        if(selectedOption==0){
+          selectedOption=2;
+        }
+        tone(sound,1600,5);
+        delay(100);
+      }
+      /* ------- BUTTON 4 - DOWN ------- */
+      if(button4State==ACTIVATED){
+        selectedOption++;
+        if(selectedOption==3){
+          selectedOption=1;
+        }
+        tone(sound,1600,5);
+        delay(100);
+      }
+      if(button7State==ACTIVATED){
+        if(selectedOption==1){
+           gamePaused=false;
+           delay(100);
+           button7State = digitalRead(button7Pin);
+        }
+        if(selectedOption==2){
+           asm volatile ("  jmp 0");
+        }
+        tone(sound,1600,5);
+        
+      }
+    }
+    
   }
-  
-  
-  display.display();
 
-  delay(10*DELAYMULTIPLIER);
+}
 
+void collector(){
+/* ------- BUTTON PRESS ACTIONS ------- */
+    bool wall;
+    /* ------- BUTTON 1 - LEFT ------- */
+    if(button1State==ACTIVATED){
+      //generateMaze();
+      if(posx-1>=0){
+        wall=readPixel(posx-1,posy);
+        if(!wall){
+          --posx;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(20);
+    }
+    /* ------- BUTTON 2 - RIGHT ------- */
+    if(button2State==ACTIVATED){
+      if(posx+1<=MAZEHEIGHT){
+        wall=readPixel(posx+1,posy);
+        if(!wall){
+          ++posx;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(20);
+    }
+    /* ------- BUTTON 3 - UP ------- */
+    if(button3State==ACTIVATED){
+      if(posy-1>=2){
+        wall=readPixel(posx,posy-1);
+        if(!wall){
+          --posy;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(20);
+    }
+    /* ------- BUTTON 4 - DOWN ------- */
+    if(button4State==ACTIVATED){
+      if(posy+1<=MAZEWIDTH){
+        wall=readPixel(posx,posy+1);
+        if(!wall){
+          ++posy;
+          tone(sound,1600,5);
+        }else{
+          tone(sound,100,50);  
+        }
+      }else{
+        tone(sound,100,50);
+      }
+      delay(20);
+    }
+  
+    if(button5State==ACTIVATED){//A
+      //display.fillCircle(20,30,5,WHITE);
+      delay(20);
+    }
+    if(button6State==ACTIVATED){//B
+      //display.fillCircle(50,30,5,WHITE);
+      delay(20);
+    }
+    if(button7State==ACTIVATED){//MENU
+      //display.fillCircle(80,30,5,WHITE);
+      delay(20);
+    }
+  
+    
+    display.setCursor(0,0);
+  
+    if(posx==MAZEHEIGHT){
+      posx=0;
+      posy=2;
+      displayLevelSplash();
+      level++;
+      illuminatedRow=0;
+      blinkPlayer=1;
+      wallPhase=1;
+    }else{
+      drawMaze();
+    }  
 }
 
 
