@@ -329,7 +329,7 @@ int8_t level=1;
 int8_t gameMode=0;
 int8_t selectedOption=1;
 int8_t menuPointerPos=0;
-bool menuPointerPosDir=false,gamePaused=false;
+bool menuPointerPosDir=false,gamePaused=false,escapeGameOver=false;
 
 void setup() {
   
@@ -359,31 +359,36 @@ void setup() {
 
   pinMode(13,OUTPUT);
 
-  randomSeed(analogRead(A0));
-  delay(random(2,2000));
+  randomSeed(analogRead(A0)+readVcc());
+  
   display.begin(SH1106_SWITCHCAPVCC, 0x3C);
   //display.begin(SH1106_SWITCHCAPVCC, 0x78);
   display.clearDisplay();
-
+  display.display();
+  
+  delay(random(2,2000));
+  
+  display.clearDisplay();
+  
   // splash
   display.setTextColor(WHITE);
   //display.println(F("jakobdesign presents")); 
   //display.print(F(" generating maze...")); 
-  display.drawBitmap(0, 0, title4 , 128, 64, WHITE);
+  display.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
-  display.drawBitmap(0, 0, title3 , 128, 64, WHITE);
+  display.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
-  display.drawBitmap(0, 0, title2 , 128, 64, WHITE);
+  display.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
@@ -397,21 +402,21 @@ void setup() {
   digitalWrite(ledPin, LOW);
   delay(3000);
   display.clearDisplay();
-  display.drawBitmap(0, 0, title2 , 128, 64, WHITE);
+  display.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
-  display.drawBitmap(0, 0, title3 , 128, 64, WHITE);
+  display.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
-  display.drawBitmap(0, 0, title4 , 128, 64, WHITE);
+  display.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
   tone(sound,1500,5);
@@ -437,24 +442,94 @@ void loop() {
 
     //display.drawBitmap(0, -20, title1 , 128, 64, WHITE);
     mainMenu();
+    displayBattery(WHITE);
     
   }
   if(gameMode==1){
     walker();
+    displayBattery(WHITE);
     if(!gamePaused){
       selectedOption=1;
     }
   }
   if(gameMode==2){
     collector();
+    displayBattery(WHITE);
+    if(!gamePaused){
+      selectedOption=1;
+    }
+  }
+  if(gameMode==3){
+    escaper();
+    displayBattery(WHITE);
+    if(!gamePaused and !escapeGameOver){
+      selectedOption=1;
+    }
+  }
+  if(gameMode==4){
+    dark();
+    displayBattery(WHITE);
     if(!gamePaused){
       selectedOption=1;
     }
   }
 
+  
   display.display();
   delay(10*DELAYMULTIPLIER);
   
+}
+
+void displayBattery(uint8_t font){
+
+  display.setTextColor(font);
+  display.setCursor(82,0);
+  //display.print("vcc: ");
+  int batt=readVcc(); 
+  //display.print(batt);
+
+  display.drawLine(114,1,125,1,font);
+  display.drawLine(114,6,125,6,font);
+  display.drawLine(114,1,114,6,font);
+  display.drawLine(125,1,125,6,font);
+  display.drawLine(126,3,126,4,font);
+
+  if(batt>4300){
+    display.drawLine(109,2,109,1,font);
+    display.drawLine(111,2,111,1,font);
+    display.drawLine(108,3,112,3,font);
+    display.drawLine(108,4,112,4,font);
+    display.drawPixel(110,5,font);
+    display.drawPixel(111,6,font);
+    display.drawPixel(112,6,font);
+    display.drawPixel(113,6,font);
+  }
+  if(batt>2900){
+    display.drawLine(116,3,116,4,font);
+    display.drawLine(117,3,117,4,font);
+  }
+  if(batt>3000){
+    display.drawLine(119,3,119,4,font);
+    display.drawLine(120,3,120,4,font);
+  }
+  if(batt>3100){
+    display.drawLine(122,3,122,4,font);
+    display.drawLine(123,3,123,4,font);
+  }
+    
+}
+
+int readVcc() {
+  int result; // Read 1.1V reference against AVcc
+  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  delay(2); // Wait for Vref to settle
+  ADCSRA |= _BV(ADSC); // Convert
+  while (bit_is_set(ADCSRA,ADSC));
+  result = ADCL;
+  result |= ADCH<<8;
+  result = 1126400L / result;
+  // Back-calculate AVcc in mV
+  return result;
 }
 
 

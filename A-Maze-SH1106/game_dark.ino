@@ -1,4 +1,4 @@
-void walker(){
+void dark(){
     /* ------- BUTTON PRESS ACTIONS ------- */
   bool wall;
   

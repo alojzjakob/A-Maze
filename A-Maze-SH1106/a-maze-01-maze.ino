@@ -1,4 +1,4 @@
-#define MAZEHEIGHT  32
+#define MAZEHEIGHT  31
 #define MAZEWIDTH  15
 
 uint16_t  Maze[] = {
@@ -32,8 +32,8 @@ uint16_t  Maze[] = {
   0b1100000000000001,
   0b1101010101010101,
   0b1100000000000001,
-  0b1101010101010101,
   0b1111111111111101,
+  0b1100000000000101,//exit
   0b0000000000000000
 };
 
@@ -49,54 +49,190 @@ void drawMaze(){
   for(i=0;i<=MAZEHEIGHT;i++){
     for(j=0;j<=MAZEWIDTH;j++){
       wall=readPixel(i,j);
-      if(wall){
+      if(wall and j>1){
 
         //walls
-        
-        if(wallPhase==1){
-          if(illuminatedRow>=i){
-            display.drawPixel(i*4,j*4,WHITE);
-            display.drawPixel(i*4,j*4+2,WHITE);
-            display.drawPixel(i*4+1,j*4+1,WHITE);
-            display.drawPixel(i*4+1,j*4+3,WHITE);
-            display.drawPixel(i*4+2,j*4+2,WHITE);
-            display.drawPixel(i*4+2,j*4+4,WHITE);
-            display.drawPixel(i*4+3,j*4+1,WHITE);
-            display.drawPixel(i*4+3,j*4+3,WHITE);
-          }else{
-            display.drawPixel(i*4+2,j*4+2,WHITE);
+        if(gameMode!=4){
+          //light mode
+          if(wallPhase==1){
+            if(illuminatedRow>=i){
+              display.drawPixel(i*4,j*4+2,WHITE);
+              display.drawPixel(i*4,j*4+2+2,WHITE);
+              display.drawPixel(i*4+1,j*4+1+2,WHITE);
+              display.drawPixel(i*4+1,j*4+3+2,WHITE);
+              display.drawPixel(i*4+2,j*4+2+2,WHITE);
+              display.drawPixel(i*4+2,j*4+4+2,WHITE);
+              display.drawPixel(i*4+3,j*4+1+2,WHITE);
+              display.drawPixel(i*4+3,j*4+3+2,WHITE);
+            }else{
+              display.drawPixel(i*4+2,j*4+2+2,WHITE);
+            }
+          }else if(wallPhase==2){
+            if(illuminatedRow>=i){
+              display.fillRect(i*4,j*4+2,4,4,WHITE);
+            }else{
+              //display.drawRect(i*4,j*4+1,4,4,WHITE);
+              display.drawPixel(i*4,j*4+2,WHITE);
+              display.drawPixel(i*4,j*4+2+2,WHITE);
+              display.drawPixel(i*4+1,j*4+1+2,WHITE);
+              display.drawPixel(i*4+1,j*4+3+2,WHITE);
+              display.drawPixel(i*4+2,j*4+2+2,WHITE);
+              display.drawPixel(i*4+2,j*4+4+2,WHITE);
+              display.drawPixel(i*4+3,j*4+1+2,WHITE);
+              display.drawPixel(i*4+3,j*4+3+2,WHITE);
+            }
+          }else if(wallPhase==3){
+            display.fillRect(i*4,j*4+2,4,4,WHITE);
           }
-        }else if(wallPhase==2){
-          if(illuminatedRow>=i){
-            display.fillRect(i*4,j*4,4,4,WHITE);
-          }else{
-            //display.drawRect(i*4,j*4,4,4,WHITE);
-            display.drawPixel(i*4,j*4,WHITE);
-            display.drawPixel(i*4,j*4+2,WHITE);
-            display.drawPixel(i*4+1,j*4+1,WHITE);
-            display.drawPixel(i*4+1,j*4+3,WHITE);
-            display.drawPixel(i*4+2,j*4+2,WHITE);
-            display.drawPixel(i*4+2,j*4+4,WHITE);
-            display.drawPixel(i*4+3,j*4+1,WHITE);
-            display.drawPixel(i*4+3,j*4+3,WHITE);
+          if(wallPhase==3 and (i==posx or j==posy) and j!=0){
+           //draw crosshair
+           display.drawPixel(i*4+2,j*4+2+2,BLACK);
           }
-        }else if(wallPhase==3){
-          display.fillRect(i*4,j*4,4,4,WHITE);
+        }else{
+          //dark mode
+
+          if(
+                   (
+                    (i==posx-1 and j==posy-1)
+                or (i==posx-1 and j==posy)
+                or (i==posx and j==posy-1)
+                or (i==posx+1 and j==posy+1)
+                or (i==posx+1 and j==posy)
+                or (i==posx and j==posy+1)
+                or (i==posx-1 and j==posy+1)
+                or (i==posx+1 and j==posy-1)
+                )
+                
+              ){
+                display.fillRect(i*4,j*4+2,4,4,WHITE);
+            }
+          
+          if(
+                (
+                   (i==posx-2 and j==posy-2)
+                or (i==posx-2 and j==posy-1)
+                or (i==posx-2 and j==posy)
+                or (i==posx-2 and j==posy+1)
+                or (i==posx-2 and j==posy+2)
+                or (i==posx and j==posy-2)
+                or (i==posx and j==posy+2)
+                or (i==posx-1 and j==posy-2)
+                or (i==posx-1 and j==posy+2)
+                or (i==posx+2 and j==posy+2)
+                or (i==posx+2 and j==posy+1)
+                or (i==posx+2 and j==posy)
+                or (i==posx+2 and j==posy-1)
+                or (i==posx+2 and j==posy-2)
+                or (i==posx+1 and j==posy+2)
+                or (i==posx+1 and j==posy-2)
+              )
+                
+              ){
+                display.drawPixel(i*4,j*4+2,WHITE);
+                display.drawPixel(i*4,j*4+2+2,WHITE);
+                display.drawPixel(i*4+1,j*4+1+2,WHITE);
+                display.drawPixel(i*4+1,j*4+3+2,WHITE);
+                display.drawPixel(i*4+2,j*4+2+2,WHITE);
+                display.drawPixel(i*4+2,j*4+4+2,WHITE);
+                display.drawPixel(i*4+3,j*4+1+2,WHITE);
+                display.drawPixel(i*4+3,j*4+3+2,WHITE);
+          }
+          if(
+              (
+                   (i==posx-3 and j==posy-3)
+                or (i==posx-3 and j==posy-2)
+                or (i==posx-3 and j==posy-1)
+                or (i==posx-3 and j==posy)
+                or (i==posx-3 and j==posy+1)
+                or (i==posx-3 and j==posy+2)
+                or (i==posx-3 and j==posy+3)
+  
+                or (i==posx-2 and j==posy+3)
+                or (i==posx-1 and j==posy+3)
+                or (i==posx and j==posy+3)
+                or (i==posx+1 and j==posy+3)
+                or (i==posx+2 and j==posy+3)
+                or (i==posx+3 and j==posy+3)
+  
+                or (i==posx+3 and j==posy+2)
+                or (i==posx+3 and j==posy+1)
+                or (i==posx+3 and j==posy)
+                or (i==posx+3 and j==posy-1)
+                or (i==posx+3 and j==posy-2)
+                or (i==posx+3 and j==posy-3)
+                
+                or (i==posx+2 and j==posy-3)
+                or (i==posx+1 and j==posy-3)
+                or (i==posx and j==posy-3)
+                or (i==posx-1 and j==posy-3)
+                or (i==posx-2 and j==posy-3)
+              )
+               
+              ){
+                display.drawPixel(i*4+1,j*4+1+2,WHITE);
+                display.drawPixel(i*4+3,j*4+3+2,WHITE);
+                display.drawPixel(i*4+1,j*4+3+2,WHITE);
+                display.drawPixel(i*4+3,j*4+1+2,WHITE);
+          }
+          if(
+              (
+                   (i==posx-4 and j==posy-4)
+                or (i==posx-4 and j==posy-3)
+                or (i==posx-4 and j==posy-2)
+                or (i==posx-4 and j==posy-1)
+                or (i==posx-4 and j==posy)
+                or (i==posx-4 and j==posy+1)
+                or (i==posx-4 and j==posy+2)
+                or (i==posx-4 and j==posy+3)
+                or (i==posx-4 and j==posy+4)
+  
+                or (i==posx-3 and j==posy+4)
+                or (i==posx-2 and j==posy+4)
+                or (i==posx-1 and j==posy+4)
+                or (i==posx and j==posy+4)
+                or (i==posx+1 and j==posy+4)
+                or (i==posx+2 and j==posy+4)
+                or (i==posx+3 and j==posy+4)
+                
+                or (i==posx+4 and j==posy+4)
+                or (i==posx+4 and j==posy+3)
+                or (i==posx+4 and j==posy+2)
+                or (i==posx+4 and j==posy+1)
+                or (i==posx+4 and j==posy)
+                or (i==posx+4 and j==posy-1)
+                or (i==posx+4 and j==posy-2)
+                or (i==posx+4 and j==posy-3)
+                or (i==posx+4 and j==posy-4)
+  
+                or (i==posx+3 and j==posy-4)
+                or (i==posx+2 and j==posy-4)
+                or (i==posx+1 and j==posy-4)
+                or (i==posx and j==posy-4)
+                or (i==posx-1 and j==posy-4)
+                or (i==posx-2 and j==posy-4)
+                or (i==posx-3 and j==posy-4)
+              )
+               
+              
+              ){
+                display.drawPixel(i*4+2,j*4+2+2,WHITE);
+          }
+          
+          
         }
         //display.drawBitmap(i*4, j*4, brick , 4, 4, WHITE);
 
-        if(wallPhase==3 and (i==posx or j==posy) and j!=0){
-          //draw crosshair
-          display.drawPixel(i*4+2,j*4+2,BLACK);
-        }
+        
         
       }else{
 
         //not walls
-        
-        if(wallPhase==3 and (i==posx or j==posy) and j!=0){
-          //draw crosshair
-          display.drawPixel(i*4+2,j*4+2,WHITE);
+        if(gameMode!=4){
+          //light mode
+          if(wallPhase==3 and (i==posx or j==posy) and j!=0){
+            //draw crosshair
+            display.drawPixel(i*4+2,j*4+2+2,WHITE);
+          }
         }
         //display.drawBitmap(i*4, j*4, checker , 4, 4, WHITE);
         /*display.drawPixel(i*4,j*4,WHITE);
@@ -115,12 +251,17 @@ void drawMaze(){
 
     //display level
   //display.fillRect(0,0,128,8,WHITE);
-  if(wallPhase>1){
-    display.setTextColor(BLACK);
+  
+  //if(wallPhase>1){
+    display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.print("level: ");
     display.print(level);
-  }
+    for(int shdw=0;shdw<124;shdw+=2){
+      display.drawPixel(shdw,8,WHITE);
+    }
+    display.drawLine(0,9,123,9,WHITE);
+  //}
 
 
   //draw player
@@ -138,11 +279,11 @@ void drawMaze(){
   display.drawPixel(posx*4+2,posy*4+3,WHITE);
   */
   if(blinkPlayer==1){
-    display.fillCircle(posx*4+1,posy*4+1,3,WHITE);
-    display.fillCircle(posx*4+1,posy*4+1,1,BLACK);
+    display.fillCircle(posx*4+1,posy*4+1+2,3,WHITE);
+    display.fillCircle(posx*4+1,posy*4+1+2,1,BLACK);
   }else{
-    display.fillCircle(posx*4+1,posy*4+1,3,BLACK);
-    display.fillCircle(posx*4+1,posy*4+1,1,WHITE);
+    display.fillCircle(posx*4+1,posy*4+1+2,3,BLACK);
+    display.fillCircle(posx*4+1,posy*4+1+2,1,WHITE);
   }
   /*
   if(blinkPlayer==1){
@@ -210,7 +351,7 @@ void generateMaze(){
       Maze[geni] |= (0x8000 >> genj);
       do{
         //Roll a stick
-        randomSeed(analogRead(A0));
+        randomSeed(analogRead(A0)+readVcc());
         //genval = (uint8_t)(analogRead(A0) & 0x00FF) % genmod;
         genval = (uint8_t)(random(10000) & 0x00FF) % genmod;
         //val = analogRead(A0) % mod;

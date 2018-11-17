@@ -23,6 +23,9 @@ void displayLevelSplash(){
       display.print(level);
       display.setCursor(55,completey);
       display.print("COMPLETE!");
+
+      displayBattery(WHITE);
+      
       display.display();
     }
   }
@@ -46,6 +49,9 @@ void displayLevelSplash(){
       display.print("LEVEL");
       display.setCursor(45,levelnoy);
       display.print(level+1);
+      
+      displayBattery(WHITE);
+      
       display.display();
     }
   }
