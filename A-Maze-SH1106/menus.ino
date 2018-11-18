@@ -173,12 +173,14 @@ void gameMenu(){
 void menuItemPointerAnimation(){
   if(menuPointerPosDir){
     menuPointerPos++;
-    if(menuPointerPos==6){
+    if(menuPointerPos>=6){
+      menuPointerPos=6;
       menuPointerPosDir=!menuPointerPosDir;
     }
   }else{
     menuPointerPos--;
-    if(menuPointerPos==-1){
+    if(menuPointerPos<=-1){
+      menuPointerPos=0;
       menuPointerPosDir=!menuPointerPosDir;
     }
   }
