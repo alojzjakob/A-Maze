@@ -83,7 +83,7 @@ void mainMenu(){
   }else{
     display.setCursor(16+27,46);
   }
-  display.print("darkness");
+  display.print("night");
   display.setTextSize(1);
 
   /* ------- BUTTON 3 - UP ------- */
