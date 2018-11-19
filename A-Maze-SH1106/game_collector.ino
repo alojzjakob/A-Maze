@@ -30,12 +30,12 @@ void collector(){
         wall=readPixel(posx-1,posy);
         if(!wall){
           --posx;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -45,14 +45,14 @@ void collector(){
         wall=readPixel(posx+1,posy);
         if(!wall){
           ++posx;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else if(numberCollectables>0){
-          tone(sound,100,50);
+          aj_tone(sound,1000,50);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -62,12 +62,12 @@ void collector(){
         wall=readPixel(posx,posy-1);
         if(!wall){
           --posy;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -77,30 +77,30 @@ void collector(){
         wall=readPixel(posx,posy+1);
         if(!wall){
           ++posy;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
   
     if(button5State==ACTIVATED){//A
       //display.fillCircle(20,30,5,WHITE);
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(60);
     }
     if(button6State==ACTIVATED){//B
       //display.fillCircle(50,30,5,WHITE);
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(60);
     }
     if(button7State==ACTIVATED){//MENU
       //display.fillCircle(80,30,5,WHITE);
       gamePaused=true;
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(200);
       button7State = digitalRead(button7Pin);
     }
@@ -109,6 +109,7 @@ void collector(){
     if(check_collectable(posx,posy)){
       get_collectable(posx,posy);
       --numberCollectables;
+      aj_tone(sound,2800,5);
     }
     if(numberCollectables>0){
       display.drawPixel(124,60,BLACK);

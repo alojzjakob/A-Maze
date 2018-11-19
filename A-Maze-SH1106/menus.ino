@@ -92,7 +92,7 @@ void mainMenu(){
     if(selectedOption==0){
       selectedOption=4;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
   /* ------- BUTTON 4 - DOWN ------- */
@@ -101,10 +101,24 @@ void mainMenu(){
     if(selectedOption==5){
       selectedOption=1;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
-  if(button7State==ACTIVATED){
+
+  if(button5State==ACTIVATED){//A
+    //display.fillCircle(20,30,5,WHITE);
+    aj_tone(sound,2400,5);
+    delay(100);
+  }
+  // toggle sound
+  if(button6State==ACTIVATED){//B
+    //display.fillCircle(50,30,5,WHITE);
+    sound_enabled=!sound_enabled;
+    aj_tone(sound,2400,5);
+    delay(100);
+  }
+  
+  if(button7State==ACTIVATED){//menu/start
     gameMode=selectedOption;
     generateMaze();
     if(selectedOption==2){
@@ -145,7 +159,7 @@ void gameMenu(){
     if(selectedOption==0){
       selectedOption=2;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
   /* ------- BUTTON 4 - DOWN ------- */
@@ -154,9 +168,23 @@ void gameMenu(){
     if(selectedOption==3){
       selectedOption=1;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
+
+  if(button5State==ACTIVATED){//A
+    //display.fillCircle(20,30,5,WHITE);
+    aj_tone(sound,2400,5);
+    delay(100);
+  }
+  // toggle sound
+  if(button6State==ACTIVATED){//B
+    //display.fillCircle(50,30,5,WHITE);
+    sound_enabled=!sound_enabled;
+    aj_tone(sound,2400,5);
+    delay(100);
+  }
+  
   if(button7State==ACTIVATED){
     if(selectedOption==1){
        gamePaused=false;
@@ -166,7 +194,7 @@ void gameMenu(){
     if(selectedOption==2){
        asm volatile ("  jmp 0");
     }
-    tone(sound,1600,5);
+    aj_tone(sound,1600,5);
   }
 }
 

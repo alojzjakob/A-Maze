@@ -18,12 +18,12 @@ void escaper(){
         wall=readPixel(posx-1,posy);
         if(!wall){
           --posx;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -33,12 +33,12 @@ void escaper(){
         wall=readPixel(posx+1,posy);
         if(!wall){
           ++posx;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -48,12 +48,12 @@ void escaper(){
         wall=readPixel(posx,posy-1);
         if(!wall){
           --posy;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
@@ -63,30 +63,30 @@ void escaper(){
         wall=readPixel(posx,posy+1);
         if(!wall){
           ++posy;
-          tone(sound,1600,5);
+          aj_tone(sound,2200,5);
         }else{
-          tone(sound,100,50);  
+          aj_tone(sound,1000,50);  
         }
       }else{
-        tone(sound,100,50);
+        aj_tone(sound,1000,50);
       }
       delay(30);
     }
   
     if(button5State==ACTIVATED){//A
       //display.fillCircle(20,30,5,WHITE);
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(60);
     }
     if(button6State==ACTIVATED){//B
       //display.fillCircle(50,30,5,WHITE);
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(60);
     }
     if(button7State==ACTIVATED){//MENU
       //display.fillCircle(80,30,5,WHITE);
       gamePaused=true;
-      tone(sound,1600,5);
+      aj_tone(sound,2400,5);
       delay(200);
       button7State = digitalRead(button7Pin);
     }
@@ -162,7 +162,7 @@ void escapeGameOverMenu(){
     if(selectedOption==0){
       selectedOption=2;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
   /* ------- BUTTON 4 - DOWN ------- */
@@ -171,7 +171,7 @@ void escapeGameOverMenu(){
     if(selectedOption==3){
       selectedOption=1;
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
     delay(100);
   }
   if(button7State==ACTIVATED){
@@ -192,7 +192,6 @@ void escapeGameOverMenu(){
     if(selectedOption==2){
        asm volatile ("  jmp 0");
     }
-    tone(sound,1600,5);
+    aj_tone(sound,2200,5);
   }
 }
-

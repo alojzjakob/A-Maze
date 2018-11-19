@@ -300,6 +300,7 @@ const int8_t button6Pin = 4; //B
 const int8_t button7Pin = 2; //MENU
 
 const int8_t sound = 3; 
+bool sound_enabled=true;
 const int8_t ledPin = 10; 
 
 int8_t button1State = 0;
@@ -377,49 +378,49 @@ void setup() {
   display.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 0, title1 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(3000);
   display.clearDisplay();
   display.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();
   display.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   display.display();
   digitalWrite(ledPin, HIGH);
-  tone(sound,1500,5);
+  aj_tone(sound,2200,5);
   digitalWrite(ledPin, LOW);
   delay(100);
   display.clearDisplay();  
@@ -474,11 +475,29 @@ void loop() {
     }
   }
 
+  displayIndicators(WHITE);
   
   display.display();
   delay(10*DELAYMULTIPLIER);
   
 }
+
+void displayIndicators(uint8_t font){
+  //speaker
+  display.drawLine(103,1,103,6,font);
+  display.drawLine(102,1,102,6,font);
+  display.drawLine(101,2,101,5,font);
+  display.drawLine(100,3,100,4,font);
+  display.drawLine(99,3,99,4,font);
+  if(sound_enabled){
+    display.drawPixel(105,2,font);
+    display.drawPixel(106,3,font);
+    display.drawPixel(106,4,font);
+    display.drawPixel(105,5,font);
+  }
+  //...
+}
+
 
 void displayBattery(uint8_t font){
 
@@ -532,4 +551,8 @@ int readVcc() {
   return result;
 }
 
-
+void aj_tone(uint8_t pin,int freq,int duration){
+  if(sound_enabled){
+    tone(pin,freq,duration);  
+  }
+}

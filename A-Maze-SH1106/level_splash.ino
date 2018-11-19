@@ -7,15 +7,15 @@ void displayLevelSplash(){
       display.clearDisplay();
       if(levely<20){
         levely+=2;
-        tone(sound,levely*65,5);
+        aj_tone(sound,levely*110,5);
       }
       if(levely==20 and levelnoy<30){
         levelnoy+=2;
-        tone(sound,levelnoy*65,5);
+        aj_tone(sound,levelnoy*110,5);
       }
       if(levely==20 and levelnoy==30 and completey<40){
         completey+=2;
-        tone(sound,completey*65,5);
+        aj_tone(sound,completey*110,5);
       }
       display.setCursor(15,levely);
       display.print("LEVEL");
@@ -39,11 +39,11 @@ void displayLevelSplash(){
       display.clearDisplay();
       if(levely<20){
         levely+=2;
-        tone(sound,levely*65,5);
+        aj_tone(sound,levely*110,5);
       }
       if(levely==20 and levelnoy<30){
         levelnoy+=2;
-        tone(sound,levelnoy*65,5);
+        aj_tone(sound,levelnoy*110,5);
       }
       display.setCursor(15,levely);
       display.print("LEVEL");
