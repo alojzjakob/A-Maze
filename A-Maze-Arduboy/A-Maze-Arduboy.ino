@@ -10,11 +10,14 @@
 #include <Arduboy2.h>
 #include <ArduboyPlaytune.h>
 
+
 // make an instance of arduboy used for many functions
 Arduboy2 arduboy;
 
 
 ArduboyPlaytune tunes(arduboy.audio.enabled);
+
+const unsigned int FRAME_RATE = 25;
 
 
  // 'title', 128x64px
@@ -64,78 +67,84 @@ const unsigned char title4 [] PROGMEM = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 };
 
-const unsigned char brick [] PROGMEM = {
-  // 'brick, 4x4px
-  0x0f, 0x0d, 0x09, 0x0f,
-};
 
-const unsigned char checker [] PROGMEM = {
-  // 'checker, 4x4px
-  0x0a, 0x05, 0x0a, 0x05, 
-};
+/*
+const int8_t button1Pin = 9; //LEFT
+const int8_t button2Pin = 8; //RIGHT
+const int8_t button3Pin = 7; //UP
+const int8_t button4Pin = 6; //DOWN
+const int8_t button5Pin = 5; //A
+const int8_t button6Pin = 4; //B
+const int8_t button7Pin = 2; //MENU
+*/
+//const int8_t sound = 3; 
+bool sound_enabled=true;
+//const int8_t ledPin = 10; 
 
+/*int8_t button1State = 0;
+int8_t button2State = 0;
+int8_t button3State = 0;
+int8_t button4State = 0;
+int8_t button5State = 0;
+int8_t button6State = 0;
+int8_t button7State = 0;
+
+
+#define ACTIVATED LOW
+*/
 #define DELAYMULTIPLIER  0
 
-#define MAZEHEIGHT  32
-#define MAZEWIDTH  15
-
-uint16_t  Maze[] = {
-  0b1101111111111111,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1100000000000001,
-  0b1101010101010101,
-  0b1111111111111101,
-  0b0000000000000000
-};
-
-uint8_t geni, genj, genk, genval, genmod;
-int8_t  genx, geny;
-
-
-int posx=0, posy=2; // Where you are in the Maze
-
-int illuminatedRow=0;
-int blinkPlayer=1;
-int wallPhase=1;
-
-int level=1;
 
 
 
+int8_t posx=0, posy=2; // Where you are in the Maze
 
+int8_t illuminatedRow=0;
+int8_t blinkPlayer=1;
+int8_t wallPhase=1;
+
+int8_t level=1;
+
+int8_t gameMode=0;
+int8_t selectedOption=1;
+int8_t menuPointerPos=0;
+bool menuPointerPosDir=false,gamePaused=false,escapeGameOver=false;
 
 void setup() {
+  
+  //Serial.begin(9600);
+  
+  /*pinMode(button1Pin, INPUT);
+  pinMode(button2Pin, INPUT);
+  pinMode(button3Pin, INPUT);
+  pinMode(button4Pin, INPUT);
+  pinMode(button5Pin, INPUT);
+  pinMode(button6Pin, INPUT);
+  pinMode(button7Pin, INPUT);
+
+  digitalWrite(button1Pin, HIGH);
+  digitalWrite(button2Pin, HIGH);
+  digitalWrite(button3Pin, HIGH);
+  digitalWrite(button4Pin, HIGH);
+  digitalWrite(button5Pin, HIGH);
+  digitalWrite(button6Pin, HIGH);
+  digitalWrite(button7Pin, HIGH);
+  // or just 
+  // pinMode(button1Pin, INPUT_PULLUP)
+  // etc
+  
+//  pinMode( OUTPUT);
+ // pinMode(ledPin, OUTPUT);
+
+ // pinMode(13,OUTPUT);*/ 
   arduboy.begin();
-  Serial.begin(9600);
-  arduboy.initRandomSeed();
-// audio setup
+  //arduboy.initRandomSeed();
+  //randomSeed(analogRead(A4));
+  //randomSeed(analogRead(A4)+readVcc());
+  arduboy.setFrameRate(FRAME_RATE);
+  arduboy.clear();
+  arduboy.display();
+  // audio setup
   tunes.initChannel(PIN_SPEAKER_1);
 #ifndef AB_DEVKIT
   // if not a DevKit
@@ -145,449 +154,203 @@ void setup() {
   tunes.initChannel(PIN_SPEAKER_1); // use the same pin for both channels
   tunes.toneMutesScore(true);       // mute the score when a tone is sounding
 #endif
-  //randomSeed(analogRead(A5));
   delay(random(2,2000));
+  
   arduboy.clear();
-
+  
   // splash
-  ////arduboy.setTextColor(WHITE);
+  arduboy.setTextColor(WHITE);
   //arduboy.println(F("jakobdesign presents")); 
   //arduboy.print(F(" generating maze...")); 
-  arduboy.drawBitmap(0, 0, title4 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
   arduboy.clear();
-  arduboy.drawBitmap(0, 0, title3 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
   arduboy.clear();
-  arduboy.drawBitmap(0, 0, title2 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
   arduboy.clear();
   arduboy.drawBitmap(0, 0, title1 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
   delay(3000);
   arduboy.clear();
-  arduboy.drawBitmap(0, 0, title2 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 2, title2 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
   arduboy.clear();
-  arduboy.drawBitmap(0, 0, title3 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 5, title3 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
   arduboy.clear();
-  arduboy.drawBitmap(0, 0, title4 , 128, 64, WHITE);
+  arduboy.drawBitmap(0, 10, title4 , 128, 64, WHITE);
   arduboy.display();
-  tunes.tone(1500,5);
-  delay(100);
-  arduboy.clear();
-  //arduboy.drawBitmap(15, 24, splash1 , 48, 26, WHITE);
-  //arduboy.drawBitmap(48, 24, splash2 , 80, 40, WHITE);
-  
-  
-  //splash tone
-
-  //delay(200);
-  //tunes.tone(1000,200);
-  //delay(400);
-  //tunes.tone(700,200);
-  //delay(200);
-  //tunes.tone(1100,200);
-
-  
-  // end splash
-
-
-  generateMaze();
-
-
-  //delay(2000);
-
-  //for(int i=0;i<MAZEHEIGHT;i++){
-  //  Serial.println(Maze[i],BIN);
-  //}
-  
-  //drawMazeSerial();
-  
-  
-  arduboy.clear();
-  
+  //digitalWrite(ledPin, HIGH);
+  tunes.tone(2200,5);
+  //digitalWrite(ledPin, LOW);
+  delay(80);
+  arduboy.clear();  
 }
-
 
 
 void loop() {
-  
-  
+    // pause render until it's time for the next frame
+  if (!(arduboy.nextFrame()))
+    return;
+  /*button1State = arduboy.pressed(LEFT_BUTTON);
+  button2State = arduboy.pressed(RIGHT_BUTTON);
+  button3State = arduboy.pressed(UP_BUTTON);
+  button4State = arduboy.pressed(DOWN_BUTTON);
+  button5State = arduboy.pressed(A_BUTTON);
+  button6State = arduboy.pressed(B_BUTTON);
+  button7State = (arduboy.pressed(LEFT_BUTTON));
+  */
   arduboy.pollButtons();
   arduboy.clear();
 
- 
-  /* ------- BUTTON PRESS ACTIONS ------- */
-  bool wall;
-  
-  
-  /* ------- BUTTON 1 - LEFT ------- */
-  if(arduboy.pressed(LEFT_BUTTON)){
-    //generateMaze();
-    if(posx-1>=0){
-      wall=readPixel(posx-1,posy);
-      if(!wall){
-        --posx;
-        tunes.tone(1600,5);
-      }else{
-        tunes.tone(100,50);  
-      }
-    }else{
-      tunes.tone(100,50);
-    }
-    delay(20);
-  }
-  /* ------- BUTTON 2 - RIGHT ------- */
-  if(arduboy.pressed(RIGHT_BUTTON)){
-    if(posx+1<=MAZEHEIGHT){
-      wall=readPixel(posx+1,posy);
-      if(!wall){
-        ++posx;
-        tunes.tone(1600,5);
-      }else{
-        tunes.tone(100,50);  
-      }
-    }else{
-      tunes.tone(100,50);
-    }
-    delay(20);
-  }
-  /* ------- BUTTON 3 - UP ------- */
-  if(arduboy.pressed(UP_BUTTON)){
-    if(posy-1>=2){
-      wall=readPixel(posx,posy-1);
-      if(!wall){
-        --posy;
-        tunes.tone(1600,5);
-      }else{
-        tunes.tone(100,50);  
-      }
-    }else{
-      tunes.tone(100,50);
-    }
-    delay(20);
-  }
-  /* ------- BUTTON 4 - DOWN ------- */
-  if(arduboy.pressed(DOWN_BUTTON)){
-    if(posy+1<=MAZEWIDTH){
-      wall=readPixel(posx,posy+1);
-      if(!wall){
-        ++posy;
-        tunes.tone(1600,5);
-      }else{
-        tunes.tone(100,50);  
-      }
-    }else{
-      tunes.tone(100,50);
-    }
-    delay(20);
-  }
-//Unused Button stuff
-  /*if(arduboy.pressed(A_BUTTON)){
-    arduboy.fillCircle(20,30,5,WHITE);
-  }
-  if(arduboy.pressed(B_BUTTON)){
-    arduboy.fillCircle(50,30,5,WHITE);
-  }
-  if(arduboy.pressed(A_BUTTON |B_BUTTON)){
-    arduboy.fillCircle(80,30,5,WHITE);
-  }
-  */
+  if(gameMode==0){
 
-  
-  arduboy.setCursor(0,0);
-
-  if(posx==MAZEHEIGHT){
-    posx=0;
-    posy=2;
-    displayLevelSplash();
-    level++;
-    illuminatedRow=0;
-    blinkPlayer=1;
-    wallPhase=1;
-  }else{
-    drawMaze();
+    //arduboy.drawBitmap(0, -20, title1 , 128, 64, WHITE);
+    mainMenu();
+    displayBattery(WHITE);
+    
   }
-  
+  if(gameMode==1){
+    walker();
+    displayBattery(WHITE);
+    if(!gamePaused){
+      selectedOption=1;
+    }
+  }
+  if(gameMode==2){
+    collector();
+    displayBattery(WHITE);
+    if(!gamePaused){
+      selectedOption=1;
+    }
+  }
+  if(gameMode==3){
+    escaper();
+    displayBattery(WHITE);
+    if(!gamePaused and !escapeGameOver){
+      selectedOption=1;
+    }
+  }
+  if(gameMode==4){
+    dark();
+    displayBattery(WHITE);
+    if(!gamePaused){
+      selectedOption=1;
+    }
+  }
+
+  displayIndicators(WHITE);
   
   arduboy.display();
-
   delay(10*DELAYMULTIPLIER);
+  
+}
 
+void displayIndicators(uint8_t font){
+  //speaker
+  arduboy.drawLine(103,1,103,6,font);
+  arduboy.drawLine(102,1,102,6,font);
+  arduboy.drawLine(101,2,101,5,font);
+  arduboy.drawLine(100,3,100,4,font);
+  arduboy.drawLine(99,3,99,4,font);
+  if(sound_enabled){
+    arduboy.drawPixel(105,2,font);
+    arduboy.drawPixel(106,3,font);
+    arduboy.drawPixel(106,4,font);
+    arduboy.drawPixel(105,5,font);
+  }
+  //...
 }
 
 
+void displayBattery(uint8_t font){
 
-void displayLevelSplash(){
-  int levely=-8,levelnoy=-8,completey=-8, i, j;
-  
-  ////arduboy.setTextColor(WHITE);
-  for(i=0;i<3;i++){
-    for(j=0;j<50;j+=2){
-      arduboy.clear();
-      if(levely<20){
-        levely+=2;
-        tunes.tone(levely*65,5);
-      }
-      if(levely==20 and levelnoy<30){
-        levelnoy+=2;
-        tunes.tone(levelnoy*65,5);
-      }
-      if(levely==20 and levelnoy==30 and completey<40){
-        completey+=2;
-        tunes.tone(completey*65,5);
-      }
-      arduboy.setCursor(15,levely);
-      arduboy.setTextBackground(BLACK);
-      arduboy.setTextColor(WHITE);
-      arduboy.print("LEVEL");
-      arduboy.setCursor(45,levelnoy);
-      arduboy.print(level);
-      arduboy.setCursor(55,completey);
-      arduboy.print("COMPLETE!");
-      arduboy.display();
-    }
+  arduboy.setTextColor(font);
+  arduboy.setCursor(50,0);
+ // arduboy.print("vcc:");/////////////////////////////////////
+  int batt=readVcc(); 
+  //arduboy.print(batt);////////////////////////////////////////
+
+  arduboy.drawLine(114,1,125,1,font);
+  arduboy.drawLine(114,6,125,6,font);
+  arduboy.drawLine(114,1,114,6,font);
+  arduboy.drawLine(125,1,125,6,font);
+  arduboy.drawLine(126,3,126,4,font);
+
+  if(batt>4350){
+    arduboy.drawLine(109,2,109,1,font);
+    arduboy.drawLine(111,2,111,1,font);
+    arduboy.drawLine(108,3,112,3,font);
+    arduboy.drawLine(108,4,112,4,font);
+    arduboy.drawPixel(110,5,font);
+    arduboy.drawPixel(111,6,font);
+    arduboy.drawPixel(112,6,font);
+    arduboy.drawPixel(113,6,font);
   }
-  
-  delay(1000);
-  
-  levely=-8;
-  levelnoy=-8;
-  for(i=0;i<2;i++){
-    for(j=0;j<50;j+=2){
-      arduboy.clear();
-      if(levely<20){
-        levely+=2;
-        tunes.tone(levely*65,5);
-      }
-      if(levely==20 and levelnoy<30){
-        levelnoy+=2;
-        tunes.tone(levelnoy*65,5);
-      }
-      arduboy.setCursor(15,levely);
-      arduboy.print("LEVEL");
-      arduboy.setCursor(45,levelnoy);
-      arduboy.print(level+1);
-      arduboy.display();
-    }
+  //if(batt>2900){
+  if(batt>3330){
+    arduboy.drawLine(116,3,116,4,font);
+    arduboy.drawLine(117,3,117,4,font);
   }
-  
-  delay(1500);
-  
-  generateMaze();
+  //if(batt>3000){
+  if(batt>3450){
+    arduboy.drawLine(119,3,119,4,font);
+    arduboy.drawLine(120,3,120,4,font);
+  }
+  //if(batt>3100){
+    if(batt>3800){
+    arduboy.drawLine(122,3,122,4,font);
+    arduboy.drawLine(123,3,123,4,font);
+  }
+    
 }
 
-void drawMazeSerial(){
-  uint8_t i, j;
-  bool dot;
-  for(i=0;i<=MAZEHEIGHT;i++){
-    for(j=0;j<=MAZEWIDTH;j++){
-      dot=readPixel(i,j);
-      if(dot){
-        Serial.print("*");
-      }else{
-        Serial.print(" ");
-      }
-    }
-    Serial.println();
-  }  
+ int readVcc() {
+//  delayShort(1000);
+  //arduboy.initRandomSeed();//dont think needed
+  power_adc_enable();// ADC on
+  int result; // Read 1.1V reference against AVcc
+  ADMUX = _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  delay(2); // wait for Vref to settle after the mux change
+  ADCSRA |= _BV(ADSC); // Convert
+  while (bit_is_set(ADCSRA,ADSC));
+ // result = ADCL;
+  //result |= ADCH<<8;
+  result = ADCW;//use ADCW to get the upper and lower registers in one
+  result = 1125300L / result -249;// AVcc in mV = 1.1*1023*1000 = 1125300
+  // Back-calculate AVcc in mV
+  return result;
+  power_adc_disable(); // ADC off
 }
 
-
-void drawMaze(){
-  uint8_t i, j;
-  bool wall;
-  
-  for(i=0;i<=MAZEHEIGHT;i++){
-    for(j=0;j<=MAZEWIDTH;j++){
-      wall=readPixel(i,j);
-      if(wall){
-
-        //walls
-        
-        if(wallPhase==1){
-          if(illuminatedRow>=i){
-            arduboy.drawPixel(i*4,j*4,WHITE);
-            arduboy.drawPixel(i*4,j*4+2,WHITE);
-            arduboy.drawPixel(i*4+1,j*4+1,WHITE);
-            arduboy.drawPixel(i*4+1,j*4+3,WHITE);
-            arduboy.drawPixel(i*4+2,j*4+2,WHITE);
-            arduboy.drawPixel(i*4+2,j*4+4,WHITE);
-            arduboy.drawPixel(i*4+3,j*4+1,WHITE);
-            arduboy.drawPixel(i*4+3,j*4+3,WHITE);
-          }else{
-            arduboy.drawPixel(i*4+2,j*4+2,WHITE);
-          }
-        }else if(wallPhase==2){
-          if(illuminatedRow>=i){
-            arduboy.fillRect(i*4,j*4,4,4,WHITE);
-          }else{
-            //arduboy.drawRect(i*4,j*4,4,4,WHITE);
-            arduboy.drawPixel(i*4,j*4,WHITE);
-            arduboy.drawPixel(i*4,j*4+2,WHITE);
-            arduboy.drawPixel(i*4+1,j*4+1,WHITE);
-            arduboy.drawPixel(i*4+1,j*4+3,WHITE);
-            arduboy.drawPixel(i*4+2,j*4+2,WHITE);
-            arduboy.drawPixel(i*4+2,j*4+4,WHITE);
-            arduboy.drawPixel(i*4+3,j*4+1,WHITE);
-            arduboy.drawPixel(i*4+3,j*4+3,WHITE);
-          }
-        }else if(wallPhase==3){
-          arduboy.fillRect(i*4,j*4,4,4,WHITE);
-        }
-        //arduboy.drawBitmap(i*4, j*4, brick , 4, 4, WHITE);
-
-        if(wallPhase==3 and (i==posx or j==posy) and j!=0){
-          //draw crosshair
-          arduboy.drawPixel(i*4+2,j*4+2,BLACK);
-        }
-        
-      }else{
-
-        //not walls
-        
-        if(wallPhase==3 and (i==posx or j==posy) and j!=0){
-          //draw crosshair
-          arduboy.drawPixel(i*4+2,j*4+2,WHITE);
-        }
-        //arduboy.drawBitmap(i*4, j*4, checker , 4, 4, WHITE);
-        /*arduboy.drawPixel(i*4,j*4,WHITE);
-        arduboy.drawPixel(i*4,j*4+2,WHITE);
-        arduboy.drawPixel(i*4+1,j*4+1,WHITE);
-        arduboy.drawPixel(i*4+1,j*4+3,WHITE);
-        arduboy.drawPixel(i*4+2,j*4+2,WHITE);
-        arduboy.drawPixel(i*4+2,j*4+4,WHITE);
-        arduboy.drawPixel(i*4+3,j*4+1,WHITE);
-        arduboy.drawPixel(i*4+3,j*4+3,WHITE);
-        */
-      }
-    }
-  }  
-
-
-    //display level
-  //arduboy.fillRect(0,0,128,8,WHITE);
-  if(wallPhase>1){
-    arduboy.setTextBackground(WHITE);
-    arduboy.setTextColor(BLACK);
-    arduboy.setCursor(0,0);
-    arduboy.print("level: ");
-    arduboy.print(level);
+/*void tunes.tone(uint8_t pin,int freq,int duration){
+  if(sound_enabled){
+    tone(pin,freq,duration);  
   }
-
-
-  //draw player
-  /*
-  arduboy.drawPixel(posx*4,posy*4+1,WHITE);
-  arduboy.drawPixel(posx*4,posy*4+2,WHITE);
-  
-  arduboy.drawPixel(posx*4+1,posy*4,WHITE);
-  arduboy.drawPixel(posx*4+2,posy*4,WHITE);
-  
-  arduboy.drawPixel(posx*4+3,posy*4+1,WHITE);
-  arduboy.drawPixel(posx*4+3,posy*4+2,WHITE);
-  
-  arduboy.drawPixel(posx*4+1,posy*4+3,WHITE);
-  arduboy.drawPixel(posx*4+2,posy*4+3,WHITE);
-  */
-  if(blinkPlayer==1){
-    arduboy.fillCircle(posx*4+1,posy*4+1,3,WHITE);
-    arduboy.fillCircle(posx*4+1,posy*4+1,1,BLACK);
-  }else{
-    arduboy.fillCircle(posx*4+1,posy*4+1,3,BLACK);
-    arduboy.fillCircle(posx*4+1,posy*4+1,1,WHITE);
-  }
-  /*
-  if(blinkPlayer==1){
-    arduboy.drawPixel(posx*4+1,posy*4+1,WHITE);
-  }
-  if(blinkPlayer==2){
-    arduboy.drawPixel(posx*4+2,posy*4+1,WHITE);
-  }
-  if(blinkPlayer==3){
-    arduboy.drawPixel(posx*4+1,posy*4+2,WHITE);
-  }
-  if(blinkPlayer==4){
-    arduboy.drawPixel(posx*4+2,posy*4+2,WHITE);
-  }
-  */
-  blinkPlayer++;
-  if(blinkPlayer>16){
-    blinkPlayer=1;
-  }
-  
-  if(illuminatedRow<MAZEHEIGHT+1){
-    illuminatedRow++;
-  }else{
-    if(wallPhase<3){
-      wallPhase++;
-      if(wallPhase==2){
-        illuminatedRow=0;
-      }
-    }
-  }
-
-  
-
-}
-
-bool readPixel(uint8_t i, uint8_t j){
-  uint16_t Data = Maze[i];
-  byte Hi = (Data & 0xFF00)>>8;
-  byte Lo = Data & 0x00FF;  
-  if(j>7){
-    return bitRead(Lo, 7 - (j % 8));
-  }else{
-    //j=j-8;
-    return bitRead(Hi, 7 - (j % 8));
-  }
-}
-
-
-
-
-
-void generateMaze(){
-  bool alternate=false;
-  for (geni = 1; geni < MAZEHEIGHT-1; geni++) {
-    if(!alternate){
-      Maze[geni] = 0b1100000000000001;
-    }else{
-      Maze[geni] = 0b1101010101010101;
-    }
-    alternate=!alternate;
-  }
-  genmod = 4;
-  for (geni = 2; geni < MAZEHEIGHT - 2; geni += 2) {
-    for (genj = 3; genj < MAZEWIDTH - 1; genj += 2) {
-      Maze[geni] |= (0x8000 >> genj);
-      do{
-        //Roll a stick
-        random();
-        //genval = (uint8_t)(analogRead(A0) & 0x00FF) % genmod;
-        genval = (uint8_t)(random(10000) & 0x00FF) % genmod;
-        //val = analogRead(A0) % mod;
-        genx = 0, geny = 0;
-        if (genval == 0)geny = 1;
-        if (genval == 1)genx = -1;
-        if (genval == 2)genx = 1;
-        if (genval == 3)geny = -1;
-      }while ((Maze[geni + geny] & (0x8000 >> (genj + genx)))); 
-      Maze[geni + geny] |= (0x8000 >> (genj + genx));
-    }
-    genmod = 3;
-  }
-}
+}*/
