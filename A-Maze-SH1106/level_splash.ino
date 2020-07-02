@@ -25,6 +25,7 @@ void displayLevelSplash(){
       display.print("COMPLETE!");
 
       displayBattery(WHITE);
+      displayIndicators(WHITE);
       
       display.display();
     }
@@ -51,6 +52,7 @@ void displayLevelSplash(){
       display.print(level+1);
       
       displayBattery(WHITE);
+      displayIndicators(WHITE);
       
       display.display();
     }

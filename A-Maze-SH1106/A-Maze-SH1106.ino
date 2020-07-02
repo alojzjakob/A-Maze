@@ -1,8 +1,8 @@
 /* A-Maze
  by Alojz Jakob <http://jakobdesign.com>
 
- ********** TAMAGUINO ***********
- * Maze game for Arduino *
+ ************* A-MAZE ***********
+ *     Maze game for Arduino    *
  ********************************
  
 */
